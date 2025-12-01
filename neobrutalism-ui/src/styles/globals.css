@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+
+  /* Neobrutalism Typography */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-black tracking-tight;
+  }
+
+  /* Remove default focus styles and add neobrutalism focus */
+  *:focus-visible {
+    @apply outline-none ring-4 ring-black ring-offset-4 ring-offset-white;
+  }
+}
+
+@layer utilities {
+  /* Neobrutalism utility classes */
+  .brutal-border {
+    @apply border-3 border-black;
+  }
+
+  .brutal-border-thick {
+    @apply border-4 border-black;
+  }
+
+  .brutal-shadow {
+    box-shadow: 4px 4px 0px 0px #000000;
+  }
+
+  .brutal-shadow-lg {
+    box-shadow: 8px 8px 0px 0px #000000;
+  }
+
+  .brutal-shadow-sm {
+    box-shadow: 2px 2px 0px 0px #000000;
+  }
+
+  /* Pressed state */
+  .brutal-pressed {
+    @apply translate-x-1 translate-y-1;
+    box-shadow: 2px 2px 0px 0px #000000;
+  }
+
+  /* Gradient backgrounds with neobrutalism */
+  .brutal-gradient-red {
+    background: linear-gradient(135deg, #FF0000 0%, #FF6666 100%);
+  }
+
+  .brutal-gradient-purple {
+    background: linear-gradient(135deg, #A020F0 0%, #B766FF 100%);
+  }
+
+  .brutal-gradient-blue {
+    background: linear-gradient(135deg, #0066FF 0%, #66A3FF 100%);
+  }
+
+  .brutal-gradient-yellow {
+    background: linear-gradient(135deg, #FFDD00 0%, #FFE833 100%);
+  }
+
+  /* Striped patterns for backgrounds */
+  .brutal-stripes {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(0, 0, 0, 0.05) 10px,
+      rgba(0, 0, 0, 0.05) 20px
+    );
+  }
+
+  /* Dot pattern */
+  .brutal-dots {
+    background-image: radial-gradient(circle, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+    background-size: 16px 16px;
+  }
+}
