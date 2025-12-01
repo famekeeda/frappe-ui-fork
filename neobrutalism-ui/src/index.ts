@@ -9,6 +9,10 @@ export { Password, type PasswordProps } from './components/Password'
 export { Checkbox, type CheckboxProps } from './components/Checkbox'
 export { Switch, type SwitchProps } from './components/Switch'
 export { RadioGroup, type RadioGroupProps, type RadioOption } from './components/Radio'
+export { FormControl, type FormControlProps } from './components/FormControl'
+export { FileUploader, type FileUploaderProps } from './components/FileUploader'
+export { DatePicker, type DatePickerProps } from './components/DatePicker'
+export { Rating, type RatingProps } from './components/Rating'
 
 // Layout Components
 export {
@@ -61,6 +65,9 @@ export {
   SelectScrollUpButton,
   SelectScrollDownButton,
 } from './components/Select'
+export { MultiSelect, type MultiSelectProps, type MultiSelectOption } from './components/MultiSelect'
+export { Autocomplete, type AutocompleteProps, type AutocompleteOption } from './components/Autocomplete'
+export { Combobox, type ComboboxProps, type ComboboxOption } from './components/Combobox'
 
 // Overlay Components
 export {
@@ -111,6 +118,9 @@ export { useResource, type Resource, type ResourceOptions } from './hooks/useRes
 export { useCall, type CallResult, type CallOptions } from './hooks/useCall'
 export { useDoc, type Doc, type DocOptions } from './hooks/useDoc'
 export { useList, type ListResult, type ListOptions } from './hooks/useList'
+export { useDoctype, type Doctype, type DoctypeOptions, type DoctypeMeta, type DoctypeField } from './hooks/useDoctype'
+export { useNewDoc, type NewDoc, type NewDocOptions } from './hooks/useNewDoc'
+export { useFrappeFetch, frappeFetch, type FrappeFetch, type FrappeFetchOptions } from './hooks/useFrappeFetch'
 
 // Styles
 import './styles/globals.css'
