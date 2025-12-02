@@ -108,10 +108,45 @@ export {
 
 // Navigation Components
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './components/Tabs'
+export { TabButtons, type TabButtonsProps, type TabButton } from './components/TabButtons'
 export { Breadcrumbs, type BreadcrumbsProps, type BreadcrumbItem } from './components/Breadcrumbs'
+export { Sidebar, type SidebarProps, type SidebarItem } from './components/Sidebar'
 
 // Display Components
 export { Avatar, AvatarGroup, avatarVariants, type AvatarProps } from './components/Avatar'
+export { Tree, type TreeProps, type TreeNode } from './components/Tree'
+export { Calendar, type CalendarProps, type CalendarEvent } from './components/Calendar'
+
+// Data Components
+export {
+  ListView,
+  ListHeader,
+  ListHeaderItem,
+  ListRows,
+  ListRow,
+  ListRowItem,
+  ListGroups,
+  ListGroupHeader,
+  ListGroupRows,
+  ListEmptyState,
+  ListFooter,
+  ListSelectBanner,
+  type ListViewProps,
+  type ListHeaderProps,
+  type ListHeaderItemProps,
+  type ListRowsProps,
+  type ListRowProps,
+  type ListRowItemProps,
+  type ListGroupsProps,
+  type ListGroupHeaderProps,
+  type ListGroupRowsProps,
+  type ListEmptyStateProps,
+  type ListFooterProps,
+  type ListSelectBannerProps,
+} from './components/ListView'
+
+// Editor Components
+export { TextEditor, type TextEditorProps } from './components/TextEditor'
 
 // Data Fetching Hooks
 export { useResource, type Resource, type ResourceOptions } from './hooks/useResource'
