@@ -12,46 +12,192 @@ A React/Next.js component library with neobrutalism design and seamless Frappe b
 🎯 **TypeScript** - Full type safety with exported interfaces
 ⚡ **Next.js 14+ Ready** - Server & Client Components support
 
-## Quick Start
+## Getting Started
 
-### Installation
+### Option 1: Clone This Repository (For Development)
+
+If you want to customize the components or contribute:
 
 ```bash
-npm install @frappe-ui/neobrutalism
-# or
-pnpm add @frappe-ui/neobrutalism
+# Clone the repository
+git clone https://github.com/robinransom-fk/frappe-fk-ui.git
+cd frappe-fk-ui
+
+# Navigate to the neobrutalism-ui package
+cd neobrutalism-ui
+
+# Install dependencies
+pnpm install
+
+# Build the package
+pnpm run build
+
+# Link for local development
+pnpm link --global
 ```
 
-### Setup
+Then in your Next.js project:
+```bash
+pnpm link --global @frappe-ui/neobrutalism
+```
 
-1. **Configure Tailwind CSS**
+### Option 2: Install from Source (Recommended for Production)
 
-```js
-// tailwind.config.js
+Install directly from the repository:
+
+```bash
+# In your Next.js project
+pnpm add https://github.com/robinransom-fk/frappe-fk-ui.git#claude/neobrutalism-ui-components-01DF4rJWEKywnySTotXaeeVP:neobrutalism-ui
+```
+
+### Option 3: Install Locally
+
+```bash
+# Clone the repository first
+git clone https://github.com/robinransom-fk/frappe-fk-ui.git
+
+# In your Next.js project
+pnpm add file:../frappe-fk-ui/neobrutalism-ui
+```
+
+## Quick Start with Next.js 15+ & Apollo Client
+
+Here's a complete setup guide for a new Next.js 15+ project with Apollo Client and this component library:
+
+### 1. Create Next.js 15 Project
+
+```bash
+pnpm create next-app@latest my-app --typescript --tailwind --app
+cd my-app
+```
+
+### 2. Install Dependencies
+
+```bash
+# Install the component library (choose one method from above)
+pnpm add file:../frappe-fk-ui/neobrutalism-ui
+
+# Install Apollo Client
+pnpm add @apollo/client graphql
+
+# Install additional dependencies
+pnpm add class-variance-authority clsx tailwind-merge lucide-react
+```
+
+### 3. Configure Tailwind CSS
+
+Update your `tailwind.config.ts`:
+
+```ts
+// tailwind.config.ts
+import type { Config } from 'tailwindcss'
 import neobrutalism from '@frappe-ui/neobrutalism/tailwind'
 
-export default {
+const config: Config = {
   presets: [neobrutalism],
   content: [
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './node_modules/@frappe-ui/neobrutalism/dist/**/*.{js,mjs}',
   ],
 }
+
+export default config
 ```
 
-2. **Import Styles**
+### 4. Setup Apollo Client
+
+Create `lib/apollo-client.ts`:
+
+```tsx
+// lib/apollo-client.ts
+import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client'
+
+const httpLink = new HttpLink({
+  uri: process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:8000/graphql',
+  credentials: 'include', // Important for Frappe authentication
+})
+
+export const apolloClient = new ApolloClient({
+  link: httpLink,
+  cache: new InMemoryCache(),
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: 'cache-and-network',
+    },
+  },
+})
+```
+
+Create `lib/apollo-provider.tsx` for client-side usage:
+
+```tsx
+// lib/apollo-provider.tsx
+'use client'
+
+import { ApolloProvider } from '@apollo/client'
+import { apolloClient } from './apollo-client'
+
+export function ApolloClientProvider({ children }: { children: React.ReactNode }) {
+  return <ApolloProvider client={apolloClient}>{children}</ApolloProvider>
+}
+```
+
+### 5. Configure Root Layout
+
+Update `app/layout.tsx`:
 
 ```tsx
 // app/layout.tsx
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
 import '@frappe-ui/neobrutalism/dist/index.css'
+import { ApolloClientProvider } from '@/lib/apollo-provider'
+import { Toaster } from '@frappe-ui/neobrutalism'
+
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+  title: 'My App',
+  description: 'Built with Neobrutalism UI',
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en">
+      <body className={inter.className}>
+        <ApolloClientProvider>
+          {children}
+          <Toaster />
+        </ApolloClientProvider>
+      </body>
+    </html>
+  )
+}
 ```
 
-3. **Use Components**
+### 6. Create Environment Variables
+
+Create `.env.local`:
+
+```env
+NEXT_PUBLIC_GRAPHQL_URL=http://localhost:8000/graphql
+NEXT_PUBLIC_FRAPPE_URL=http://localhost:8000
+```
+
+### 7. Example Usage - Components Only
 
 ```tsx
+// app/page.tsx
 import { Button, Input, Card, Badge } from '@frappe-ui/neobrutalism'
 
-export default function App() {
+export default function Page() {
   return (
     <Card className="p-6">
       <h1 className="text-2xl font-black mb-4">Welcome</h1>
@@ -61,6 +207,191 @@ export default function App() {
     </Card>
   )
 }
+```
+
+### 8. Example with Apollo Client + GraphQL
+
+Create a GraphQL query and use it with the components:
+
+```tsx
+// app/users/page.tsx
+'use client'
+
+import { useQuery, gql } from '@apollo/client'
+import {
+  ListView,
+  ListHeader,
+  ListHeaderItem,
+  ListRows,
+  ListRow,
+  ListRowItem,
+  Spinner,
+  Alert,
+  Card,
+} from '@frappe-ui/neobrutalism'
+
+const GET_USERS = gql`
+  query GetUsers {
+    users {
+      id
+      name
+      email
+      role
+    }
+  }
+`
+
+export default function UsersPage() {
+  const { loading, error, data } = useQuery(GET_USERS)
+
+  if (loading) {
+    return (
+      <div className="flex justify-center p-12">
+        <Spinner size="lg" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <Alert variant="destructive" title="Error loading users">
+        {error.message}
+      </Alert>
+    )
+  }
+
+  return (
+    <Card className="p-6">
+      <h1 className="text-2xl font-black mb-4">Users</h1>
+
+      <ListView>
+        <ListHeader>
+          <ListHeaderItem>Name</ListHeaderItem>
+          <ListHeaderItem>Email</ListHeaderItem>
+          <ListHeaderItem>Role</ListHeaderItem>
+        </ListHeader>
+
+        <ListRows>
+          {data.users.map((user) => (
+            <ListRow key={user.id}>
+              <ListRowItem>{user.name}</ListRowItem>
+              <ListRowItem>{user.email}</ListRowItem>
+              <ListRowItem>{user.role}</ListRowItem>
+            </ListRow>
+          ))}
+        </ListRows>
+      </ListView>
+    </Card>
+  )
+}
+```
+
+### 9. Example with Frappe Data Hooks
+
+Using the built-in Frappe data fetching hooks:
+
+```tsx
+// app/customers/page.tsx
+'use client'
+
+import { useList } from '@frappe-ui/neobrutalism'
+import {
+  ListView,
+  ListHeader,
+  ListHeaderItem,
+  ListRows,
+  ListRow,
+  ListRowItem,
+  ListFooter,
+  Button,
+  Spinner,
+  Alert,
+  Card,
+} from '@frappe-ui/neobrutalism'
+
+export default function CustomersPage() {
+  const {
+    data,
+    loading,
+    error,
+    reload,
+    loadMore,
+    hasMore,
+  } = useList('Customer', {
+    fields: ['name', 'customer_name', 'customer_type', 'territory'],
+    filters: { disabled: 0 },
+    orderBy: 'creation desc',
+    pageLength: 20,
+  })
+
+  if (loading && data.length === 0) {
+    return (
+      <div className="flex justify-center p-12">
+        <Spinner size="lg" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <Alert variant="destructive" title="Error loading customers">
+        {error}
+      </Alert>
+    )
+  }
+
+  return (
+    <Card className="p-6">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-black">Customers</h1>
+        <Button onClick={reload} variant="outline">
+          Refresh
+        </Button>
+      </div>
+
+      <ListView>
+        <ListHeader>
+          <ListHeaderItem>ID</ListHeaderItem>
+          <ListHeaderItem>Name</ListHeaderItem>
+          <ListHeaderItem>Type</ListHeaderItem>
+          <ListHeaderItem>Territory</ListHeaderItem>
+        </ListHeader>
+
+        <ListRows>
+          {data.map((customer) => (
+            <ListRow key={customer.name}>
+              <ListRowItem>{customer.name}</ListRowItem>
+              <ListRowItem>{customer.customer_name}</ListRowItem>
+              <ListRowItem>{customer.customer_type}</ListRowItem>
+              <ListRowItem>{customer.territory}</ListRowItem>
+            </ListRow>
+          ))}
+        </ListRows>
+
+        <ListFooter>
+          <span>Showing {data.length} customers</span>
+          {hasMore && (
+            <Button onClick={loadMore} variant="outline" loading={loading}>
+              Load More
+            </Button>
+          )}
+        </ListFooter>
+      </ListView>
+    </Card>
+  )
+}
+```
+
+### 10. Combining Apollo Client & Frappe Hooks
+
+You can use both approaches in the same app:
+
+```tsx
+// Use Apollo Client for GraphQL APIs
+import { useQuery } from '@apollo/client'
+
+// Use Frappe hooks for Frappe REST APIs
+import { useDoc, useList, useCall } from '@frappe-ui/neobrutalism'
 ```
 
 ## Design System
